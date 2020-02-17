@@ -178,33 +178,36 @@ def test(model, optimizer):
     
     print({k: np.mean(v) for k, v in print_.items()})
 
+def main():
+    # hidden dimension and dimension of latent space
+    H_DIM = 128
+    Z_DIM = 5
 
-# hidden dimension and dimension of latent space
-H_DIM = 128
-Z_DIM = 5
+    # normal VAE
+    modelN = ModelVAE(h_dim=H_DIM, z_dim=Z_DIM, distribution='normal')
+    optimizerN = optim.Adam(modelN.parameters(), lr=1e-3)
 
-# normal VAE
-modelN = ModelVAE(h_dim=H_DIM, z_dim=Z_DIM, distribution='normal')
-optimizerN = optim.Adam(modelN.parameters(), lr=1e-3)
+    print('##### Normal VAE #####')
 
-print('##### Normal VAE #####')
+    # training for 1 epoch
+    train(modelN, optimizerN)
 
-# training for 1 epoch
-train(modelN, optimizerN)
+    # test
+    test(modelN, optimizerN)
 
-# test
-test(modelN, optimizerN)
+    print()
 
-print()
+    # hyper-spherical  VAE
+    modelS = ModelVAE(h_dim=H_DIM, z_dim=Z_DIM + 1, distribution='vmf')
+    optimizerS = optim.Adam(modelS.parameters(), lr=1e-3)
 
-# hyper-spherical  VAE
-modelS = ModelVAE(h_dim=H_DIM, z_dim=Z_DIM + 1, distribution='vmf')
-optimizerS = optim.Adam(modelS.parameters(), lr=1e-3)
+    print('##### Hyper-spherical VAE #####')
 
-print('##### Hyper-spherical VAE #####')
+    # training for 1 epoch
+    train(modelS, optimizerS)
 
-# training for 1 epoch
-train(modelS, optimizerS)
-
-# test
-test(modelS, optimizerS)
+    # test
+    test(modelS, optimizerS)
+    
+if __name__ == '__main__':
+    main()
